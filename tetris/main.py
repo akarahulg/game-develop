@@ -19,6 +19,9 @@ clock = pygame.time.Clock()
 
 game = Game()
 
+GAME_UPDATE = pygame.USEREVENT
+pygame.time.set_timer(GAME_UPDATE, 200) 
+
 running = True
 
 while running:
@@ -34,7 +37,9 @@ while running:
                 game.move_right()
             if event.key == pygame.K_j:
                 game.move_down()
-
+        if event.type == GAME_UPDATE:
+            game.move_down()
+            
     screen.fill(GRAY)
     game.draw(screen)
 

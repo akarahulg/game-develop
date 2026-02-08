@@ -14,14 +14,8 @@ class Grid:
             return False
         return True
     
-    def print_grid(self):
-        for row in range(self.num_rows):
-            for column in range(self.num_cols):
-                print(self.grid[row][column], end = " ")
-            print() 
     
     def draw(self, screen):
-        self.print_grid()
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 cellValue =  self.grid[row][col]

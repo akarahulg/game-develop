@@ -30,11 +30,10 @@ class Game:
 
     def get_random_block(self):
         if len(self.blocks) == 0:
-            return [LBlock(), JBlock(), IBlock(), OBlock(), SBlock(), TBlock(), ZBlock()]
-        else:
-            selected = random.choice(self.blocks)
-            self.blocks.remove(selected)
-            return selected
+            self.blocks = [LBlock(), JBlock(), IBlock(), OBlock(), SBlock(), TBlock(), ZBlock()]
+        selected = random.choice(self.blocks)
+        self.blocks.remove(selected)
+        return selected
 
     def rotate(self):
         self.current_block.rotate()
@@ -56,9 +55,9 @@ class Game:
     def is_block_fit(self):
         tiles = self.current_block.updated_tile_positions() 
         for tile in tiles:
-            if self.grid.is_empty(tile.row, tile.col) == True:
-                return True
-            return False           
+            if self.grid.is_empty(tile.row, tile.col) == False:
+                return False
+        return True       
 
     def draw(self, screen):
         self.grid.draw(screen)

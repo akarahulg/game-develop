@@ -1,10 +1,10 @@
-#TETRIS
 
+# TETRIS
 
-Tetris game implemented with pygame.
+Tetris game implemented with **Pygame**.
 
-#TODO 
+## Screenshot
 
-[] Key pressed logic. Auto shift
-[] Remake the blocks with Sprites
+![Tetris Screenshot](screenshot.png)
+
 

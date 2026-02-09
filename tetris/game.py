@@ -3,12 +3,14 @@ import pygame
 import random
 from colors import Colors
 from grid import Grid
+from sys import exit
 
 class Game:
     def __init__(self):
         self.grid = Grid()
         self.colors = Colors.get_block_colors()
         self.blocks = [LBlock(), JBlock(), IBlock(), OBlock(), SBlock(), TBlock(), ZBlock()]
+        # self.blocks = [OBlock()]
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
 
@@ -31,12 +33,16 @@ class Game:
     def get_random_block(self):
         if len(self.blocks) == 0:
             self.blocks = [LBlock(), JBlock(), IBlock(), OBlock(), SBlock(), TBlock(), ZBlock()]
+            # self.blocks = [OBlock()]
         selected = random.choice(self.blocks)
         self.blocks.remove(selected)
         return selected
 
     def rotate(self):
         self.current_block.rotate()
+        if self.inside_grid() == False or self.is_block_fit() == False:
+            self.current_block.rotate_back()
+    
     
     def inside_grid(self):
         tiles = self.current_block.updated_tile_positions()
@@ -51,14 +57,21 @@ class Game:
             self.grid.grid[tile.row][tile.col] = self.current_block.id
         self.current_block = self.next_block
         self.next_block = self.get_random_block()
+        for row in range(self.grid.num_rows):
+            self.grid.is_row_full(row)
+        if len(self.grid.complete_rows) > 0:
+            self.grid.clear_rows()
+        if self.is_block_fit() == False:
+            self.grid.reset()
+
 
     def is_block_fit(self):
         tiles = self.current_block.updated_tile_positions() 
         for tile in tiles:
-            if self.grid.is_empty(tile.row, tile.col) == False:
+            if self.grid.is_empty(tile.row, tile.col) is False:
                 return False
         return True       
 
     def draw(self, screen):
         self.grid.draw(screen)
-        self.current_block.draw(screen, 0 , 3)
+        self.current_block.draw(screen, 0, 0)

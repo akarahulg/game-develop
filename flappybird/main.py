@@ -3,6 +3,7 @@ import pygame
 from settings import *
 from game import Game
 from bird import Bird
+from pipe import Pipe
 
 class FlappyBird:
     def __init__(self):
@@ -13,32 +14,49 @@ class FlappyBird:
         self.clock = pygame.time.Clock()
         self.GAME_UPDATE = pygame.USEREVENT
         pygame.time.set_timer(self.GAME_UPDATE, TICK)
-        
-        self.game = Game()
-        self.bird = Bird((100, GAME_HEIGHT //2))
-        self.bird_group = pygame.sprite.Group(self.bird)
 
-        self.fly = True
         self.running = True
+        self.game = Game()
+        self.start = False
 
-    
+        self.start_image = pygame.image.load('assets/sprites/message.png').convert_alpha()
+        self.start_image = pygame.transform.scale(
+                                    self.start_image,
+                                    (self.start_image.get_width() * 1.5,
+                                    self.start_image.get_height() * 1.5)
+                                    )
+        self.start_rect = self.start_image.get_rect(
+                                center=(GAME_WIDTH // 2, GAME_HEIGHT // 2)
+                                  )
+
+
+        self.bkg = pygame.image.load('assets/sprites/background-day.png').convert_alpha()
+        self.bkg = pygame.transform.scale(self.bkg, (GAME_WIDTH, GAME_HEIGHT))
+        self.bkg_rect = self.bkg.get_rect(topleft=[0,0])
+
+    def start_screen(self):
+        self.display_surface.blit(self.bkg, self.bkg_rect)
+        self.display_surface.blit(self.start_image, self.start_rect)
+        
+
     def run(self):
         while self.running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE and self.fly is True:
-                        self.bird.flap()
-
-            self.game.run()
-
-            if self.bird.rect.y >= 450:
-                self.fly = False
-            if self.fly:
-                self.bird_group.update() 
-            self.bird_group.draw(self.display_surface)
-
+            if not self.start:
+                self.start_screen()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            self.start = True
+            else:
+                self.game.run()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            self.game.bird.flap()
 
             pygame.display.update()
             self.clock.tick(FPS)

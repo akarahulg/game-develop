@@ -8,6 +8,12 @@ from score import Score
 class Game():
     def __init__(self): 
 
+        #Sound Files 
+        self.flap_sound = pygame.mixer.Sound('./assets/audio/wing.wav')
+        self.score_sound = pygame.mixer.Sound('./assets/audio/point.wav')
+        self.hit_sound = pygame.mixer.Sound('./assets/audio/hit.wav')
+        self.die_sound = pygame.mixer.Sound('./assets/audio/die.wav')
+
         self.display_surface = pygame.display.get_surface()
 
         self.bkg = pygame.image.load('assets/sprites/background-day.png').convert_alpha()
@@ -97,18 +103,22 @@ class Game():
 
     def collide_check(self):
         collision = pygame.sprite.groupcollide(self.bird_group, self.pipe_group, False, False)
-        if collision:
+        if collision and self.gameover_status is False:
             self.fly = False
+            self.hit_sound.play()
+            self.die_sound.play()
 
     def check_crash(self):
-        if self.bird.rect.bottom >= self.base_rect.top:
-            self.fly = False   
+        if self.bird.rect.bottom >= self.base_rect.top and self.fly:
+            self.fly = False
+            self.hit_sound.play()
     
     def increase_score(self):
         for pipe in self.pipe_group:
             if pipe.passed is False and pipe.rect.right < self.bird.rect.left:
                 pipe.passed = True
                 self.score += 0.5 
+                self.score_sound.play()
                 
         self.score_sprite.draw_score(int(self.score))
     

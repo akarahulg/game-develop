@@ -8,6 +8,9 @@ from pipe import Pipe
 class FlappyBird:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
+
+
         self.display_surface = pygame.display.set_mode((GAME_WIDTH , GAME_HEIGHT))
         pygame.display.set_caption('FlappyBird')
 
@@ -56,8 +59,9 @@ class FlappyBird:
                     if event.type == pygame.QUIT:
                         self.running = False
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
+                        if event.key == pygame.K_SPACE and self.game.fly:
                             self.game.bird.flap()
+                            self.game.flap_sound.play()
 
             pygame.display.update()
             self.clock.tick(FPS)

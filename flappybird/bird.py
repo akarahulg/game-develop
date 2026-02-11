@@ -22,7 +22,7 @@ class Bird(pygame.sprite.Sprite):
         self.velocity = 0.0
 
 
-    def update(self, fly):
+    def update(self, fly, rstart):
         # animate
         self.bird_index = (self.bird_index + ANIMATION_SPEED) % len(self.bird_frames)
         self.image = self.bird_frames[int(self.bird_index)]
@@ -38,6 +38,11 @@ class Bird(pygame.sprite.Sprite):
             self.image = self.bird_frames[1]
             self.image = pygame.transform.rotate(self.image, -80)
 
+        if rstart:
+            self.rect.center = (99, GAME_HEIGHT // 2)
+            self.velocity = 0.0
+            self.bird_index = 0.0
+            self.image = self.bird_frames[int(self.bird_index)]
 
     def flap(self):
         self.velocity = -JUMP_SPEED
